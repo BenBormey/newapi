@@ -1,0 +1,15 @@
+# ស្តង់ដារ code style របស់ក្រុម - Visual Studio អានស្វ័យប្រវត្តិ
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+csharp_style_var_when_type_is_apparent = true:suggestion
+dotnet_sort_system_directives_first = true
+
+[*.{json,yml,yaml,csproj,sln}]
+indent_size = 2

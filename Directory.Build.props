@@ -1,0 +1,10 @@
+<!-- Config រួមគ្រប់ project ក្នុង solution - មិនចាំបាច់ដាក់ដដែលៗក្នុង csproj នីមួយៗ -->
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>

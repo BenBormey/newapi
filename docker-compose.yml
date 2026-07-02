@@ -1,0 +1,33 @@
+# Run API + SQL Server: docker compose up --build
+# ចំណាំ: SQL Server មិន auto-run init.sql ដូច Postgres ទេ
+# -> ក្រោយ container ដើរ run database/init.sql ដោយខ្លួនឯង (SSMS / Azure Data Studio / sqlcmd)
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_password123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Your_password123 -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: src/SmartDms.Api/Dockerfile
+    ports:
+      - "5080:5080"
+    environment:
+      ConnectionStrings__Default: "Server=sqlserver;Database=smartdms;User Id=sa;Password=Your_password123;TrustServerCertificate=True"
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+volumes:
+  mssqldata:
