@@ -6,4 +6,7 @@
     <ProjectReference Include="..\SmartDms.Domain\JuJuBis.Domain.csproj" />
     <ProjectReference Include="..\SmartDms.Shared\JuJuBis.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\Role\Commands\NewFolder\" />
+  </ItemGroup>
 </Project>

@@ -1,3 +1,5 @@
+using JuJuBi.Application.Abstractions.Data;
+using JuJuBi.Infrastructure.Repositories;
 using JuJuBis.Application.Abstractions.Auth;
 using JuJuBis.Application.Abstractions.Data;
 using JuJuBis.Infrastructure.Auth;
@@ -18,6 +20,11 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+        services.AddScoped<IUomRepository, UomRepository>();
+        services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
         return services;
     }
 }

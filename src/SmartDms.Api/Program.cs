@@ -1,11 +1,13 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Serilog;
+using JuJuBi.Api.Authorization;
 using JuJuBis.Api.Middleware;
 using JuJuBis.Application;
 using JuJuBis.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -41,15 +43,17 @@ try
             };
         });
     builder.Services.AddAuthorization();
+    builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("Frontend", policy => policy
-            .WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+        options.AddPolicy("AllowAll", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
     });
-
     builder.Services.AddControllers();
     builder.Services.AddHealthChecks();
     builder.Services.AddEndpointsApiExplorer();
@@ -88,8 +92,8 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();                  // http://localhost:5080/swagger
     }
-
-    app.UseCors("Frontend");
+    app.UseCors("AllowAll");
+    //app.UseCors("Frontend");
     app.UseAuthentication();           
     app.UseAuthorization();
 

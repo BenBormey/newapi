@@ -1,3 +1,4 @@
+using JuJuBi.Application.Abstractions.Data;
 using JuJuBis.Application.Abstractions.Auth;
 using JuJuBis.Application.Abstractions.Data;
 using JuJuBis.Application.Abstractions.Messaging;
@@ -10,15 +11,18 @@ public sealed class LoginHandler : ICommandHandler<LoginCommand, Result<LoginRes
     private readonly IUserRepository _users;
     private readonly IPasswordHasher _hasher;
     private readonly IJwtTokenGenerator _jwt;
+    private readonly IPermissionRepository _permissions;   // ← ថ្មី
 
     public LoginHandler(
         IUserRepository users,
         IPasswordHasher hasher,
-        IJwtTokenGenerator jwt)
+        IJwtTokenGenerator jwt,
+        IPermissionRepository permissions)                 // ← ថ្មី
     {
         _users = users;
         _hasher = hasher;
         _jwt = jwt;
+        _permissions = permissions;                        // ← ថ្មី
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand cmd, CancellationToken ct)
@@ -42,7 +46,10 @@ public sealed class LoginHandler : ICommandHandler<LoginCommand, Result<LoginRes
         if (!isValid)
             return Result.Failure<LoginResponse>("Invalid username or password");
 
-        var token = _jwt.Generate(user);
+        // អាន permissions របស់ user ដាក់ចូល token
+        var permissions = await _permissions.GetUserPermissionCodesAsync(user.Id, ct);
+
+        var token = _jwt.Generate(user, permissions);      // ← បន្ថែម permissions
 
         return Result.Success(new LoginResponse(
             token,

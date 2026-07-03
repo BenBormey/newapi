@@ -9,6 +9,6 @@ namespace JuJuBis.Application.Abstractions.Auth
 {
     public interface IJwtTokenGenerator
     {
-        string Generate(User user);
+        string Generate(User user, IEnumerable<string> permissions);
     }
 }
